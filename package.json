@@ -1,0 +1,26 @@
+{
+  "name": "desarrollo-de-software",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.13.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@nestjs/typeorm": "^11.0.1",
+    "axios": "^1.9.0",
+    "bootstrap": "^5.3.6",
+    "sqlite3": "^6.0.1",
+    "typeorm": "^0.3.28"
+  }
+}
