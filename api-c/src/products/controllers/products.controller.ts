@@ -1,27 +1,21 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
-import {
-  CreateProductInput,
-  Product,
-  UpdateProductInput,
-} from '../product.types';
+import { Product, } from '../product.types';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
+import { PaginatedResult } from 'src/common/types/paginated-result.type';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(@Query('name') name?: string): Product[] {
-    return this.productsService.findAll(name);
+  findAll(@Query('name') name?: string,
+  @Query('orderBy') orderBy?: 'price' | 'name',
+  @Query('order') order?: 'asc' | 'desc',
+  @Query('page') page?: number,
+  @Query('limit') limit?: number): PaginatedResult<Product> {
+    return this.productsService.findAll(name, orderBy, order, page ? Number(page) : undefined, limit ? Number(limit) : undefined);
   }
 
   @Get(':id')
@@ -30,13 +24,18 @@ export class ProductsController {
   }
 
   @Post()
-  create(@Body() body: CreateProductInput): Product {
+  create(@Body() body: CreateProductDto): Product {
     return this.productsService.create(body);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() body: UpdateProductInput): Product {
+  update(@Param('id') id: string, @Body() body: UpdateProductDto): Product {
     return this.productsService.update(Number(id), body);
+  }
+
+  @Patch(':id/stock')
+  reduceStock(@Param('id') id: string, @Body() body: { quantity: number }): Product {
+    return this.productsService.reduceStock(Number(id), body.quantity);
   }
 
   @Delete(':id')

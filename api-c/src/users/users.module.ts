@@ -5,6 +5,7 @@ import { JsonPlaceholderUsersGateway } from './gateways/jsonplaceholder-users.ga
 import { USERS_GATEWAY } from './gateways/users.gateway';
 import { UsersService } from './services/users.service';
 import { UserEntity } from './user.entity';
+import { LocalUsersGateway } from './gateways/local-users.gateway';
 
 @Global()
 @Module({
@@ -12,7 +13,14 @@ import { UserEntity } from './user.entity';
   controllers: [UsersController],
   providers: [
     UsersService,
-    { provide: USERS_GATEWAY, useClass: JsonPlaceholderUsersGateway },
+    {
+      provide: USERS_GATEWAY,
+      useFactory: () => {
+        return process.env.USERS_SOURCE === 'local'
+          ? new LocalUsersGateway()
+          : new JsonPlaceholderUsersGateway();
+      },
+    },
   ],
   exports: [UsersService, USERS_GATEWAY],
 })

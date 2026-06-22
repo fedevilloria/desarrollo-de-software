@@ -30,13 +30,29 @@ export class AuthService {
       role,
     });
 
+    let savedUser: UserEntity;
+
     try {
-      await this.usersRepo.save(entity);
+      savedUser = await this.usersRepo.save(entity);
     } catch {
       throw new ConflictException('El email ya está registrado');
     }
 
-    return { message: 'Usuario registrado correctamente', role };
+    const accessToken = this.jwtService.sign({
+      sub: savedUser.id,
+      email: savedUser.email,
+      role: savedUser.role,
+    });
+
+    return {
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        role: savedUser.role,
+        createdAt: savedUser.createdAt,
+      },
+      access_token: accessToken,
+    };
   }
 
   async login(email: string, password: string) {
@@ -51,15 +67,25 @@ export class AuthService {
     }
 
     const ok = await bcrypt.compare(password, user.passwordHash);
+
     if (!ok) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
     const accessToken = this.jwtService.sign({
       sub: user.id,
+      email: user.email,
       role: user.role,
     });
 
-    return { access_token: accessToken };
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+      access_token: accessToken,
+    };
   }
 }

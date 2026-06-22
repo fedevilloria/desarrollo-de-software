@@ -1,13 +1,7 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import {
-  CreateProductInput,
-  Product,
-  UpdateProductInput,
-} from '../product.types';
-import {
-  PRODUCTS_REPOSITORY,
-  ProductsRepository,
-} from '../repositories/products.repository';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateProductInput, Product, UpdateProductInput, } from '../product.types';
+import { PRODUCTS_REPOSITORY, ProductsRepository, } from '../repositories/products.repository';
+import { PaginatedResult } from 'src/common/types/paginated-result.type';
 
 @Injectable()
 export class ProductsService {
@@ -16,13 +10,17 @@ export class ProductsService {
     private readonly productsRepository: ProductsRepository,
   ) {}
 
-  findAll(name?: string): Product[] {
-    return this.productsRepository.findAll(name);
+  findAll(name?: string,
+    orderBy?: 'price' | 'name',
+    order?: 'asc' | 'desc',
+    page?: number,
+    limit?: number,): PaginatedResult<Product> {
+    return this.productsRepository.findAll(name, orderBy, order, page, limit);
   }
 
   findOne(id: number): Product {
     const product = this.productsRepository.findById(id);
-    if (!product) throw new NotFoundException('Product not found');
+    if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
   }
 
@@ -32,13 +30,31 @@ export class ProductsService {
 
   update(id: number, input: UpdateProductInput): Product {
     const product = this.productsRepository.update(id, input);
-    if (!product) throw new NotFoundException('Product not found');
+    if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
+  }
+
+  reduceStock(id: number, quantity: number): Product {
+    const product = this.productsRepository.findById(id);
+    if (!product){
+      throw new NotFoundException('Producto no encontrado');
+    }
+
+    if (quantity > product.stock) {
+      throw new BadRequestException('Stock insuficiente.');
+    }
+
+    const updatedProduct = this.productsRepository.updateStock(id, quantity);
+    if (!updatedProduct) {
+      throw new NotFoundException('Producto no encontrado');
+    }
+
+    return updatedProduct;
   }
 
   remove(id: number): Product {
     const product = this.productsRepository.remove(id);
-    if (!product) throw new NotFoundException('Product not found');
+    if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
   }
 }
