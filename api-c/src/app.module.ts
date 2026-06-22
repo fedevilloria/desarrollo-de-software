@@ -9,6 +9,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { TimingMiddleware } from './common/middlewares/timing.middleware';
 import { UserEntity } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
     ProductsModule,
     UsersModule,
     AuthModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -50,6 +50,10 @@ export class InMemoryProductsRepository implements ProductsRepository {
   findById(id: number): Product | undefined {
     return this.products.find((p) => p.id === id);
   }
+  
+  findByCategoryId(categoryId: number): Product[] {
+    return this.products.filter((product) => product.categoryId === categoryId);
+  }
 
   create(input: CreateProductInput): Product {
     const product: Product = {
@@ -57,6 +61,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
       name: input.name,
       price: input.price,
       stock: input.stock,
+      categoryId: input.categoryId,
     };
 
     this.products.push(product);
@@ -70,6 +75,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
     if (input.name !== undefined) product.name = input.name;
     if (input.price !== undefined) product.price = input.price;
     if (input.stock !== undefined) product.stock = input.stock;
+    if (input.categoryId !== undefined) product.categoryId = input.categoryId;
     return product;
   }
 
