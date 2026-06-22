@@ -22,7 +22,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Category {
-    return this.categoriesService.remove(Number(id));
-  }
+    remove(@Param('id') id: string): Promise<Category> {
+        return this.categoriesService.remove(Number(id));
+    }
 }

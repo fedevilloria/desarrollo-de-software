@@ -1,8 +1,7 @@
 import { CreateProductInput, Product, UpdateProductInput, } from '../product.types';
-import { ProductsRepository } from './products.repository';
 import { PaginatedResult } from 'src/common/types/paginated-result.type';
 
-export class InMemoryProductsRepository implements ProductsRepository {
+export class InMemoryProductsRepository {
   private products: Product[] = [];
   private nextId = 1;
 

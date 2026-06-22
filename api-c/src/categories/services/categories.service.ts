@@ -17,7 +17,7 @@ export class CategoriesService {
   constructor(
     @Inject(CATEGORIES_REPOSITORY)
     private readonly categoriesRepository: CategoriesRepository,
-    
+
     @Inject(forwardRef(() => ProductsService))
     private readonly productsService: ProductsService,
   ) {}
@@ -40,14 +40,14 @@ export class CategoriesService {
     return this.categoriesRepository.create(input);
   }
 
-  remove(id: number): Category {
+  async remove(id: number): Promise<Category> {
     const category = this.categoriesRepository.findById(id);
 
     if (!category) {
       throw new NotFoundException('Category not found');
     }
 
-    const products = this.productsService.findByCategoryId(id);
+    const products = await this.productsService.findByCategoryId(id);
 
     if (products.length > 0) {
       throw new ConflictException(

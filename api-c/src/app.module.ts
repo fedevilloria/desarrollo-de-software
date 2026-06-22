@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { TimingMiddleware } from './common/middlewares/timing.middleware';
 import { UserEntity } from './users/user.entity';
+import { ProductEntity } from './products/product.entity';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 
@@ -20,7 +21,7 @@ import { CategoriesModule } from './categories/categories.module';
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
       database: process.env.SQLITE_DATABASE ?? './database.sqlite',
-      entities: [UserEntity],
+      entities: [UserEntity, ProductEntity],
       synchronize: true,
     }),
     ProductsModule,
